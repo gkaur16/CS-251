@@ -116,7 +116,7 @@ public:
         {
             Rows[r].Cols[c] = T{};  // default value for type T:
         }
-      }
+     }
     //
     // TODO
     //
@@ -137,7 +137,11 @@ public:
   {
   
     int R = other.NumRows;
-    int C = other.Rows[0].NumCols;
+    int C;
+    
+    for (int c = 0; c < R; ++c){
+        C = other.Rows[c].NumCols;
+    }
     
     Rows = new ROW[R];  // an array with R ROW structs:
     NumRows = R;
@@ -322,10 +326,7 @@ public:
     //
     // TODO
     //
-
-    T temp = {};  // we need to return something, so a temp for now:
-
-    return temp;
+    return this->Rows[r].Cols[c];
   }
 
 
