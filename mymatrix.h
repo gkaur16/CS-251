@@ -384,16 +384,16 @@ public:
   {
     //mymatrix<T> result;
     int removeZero;
-    //
-    // both matrices must be rectangular for this to work:
-    //
-    
-    for(int r = 0; r < Rows[0].NumCols; ++r)
+
+    for(int r = 0; r < NumRows; ++r)
     {
         if (Rows[0].NumCols != Rows[r].NumCols)
            throw runtime_error("mymatrix::*: this not rectangular");
-
-        if (other.Rows[0].NumCols != other.Rows[r].NumCols)
+    }
+    
+    for (int c = 0; c < other.NumRows; ++c)
+    {
+        if (other.Rows[0].NumCols != other.Rows[c].NumCols)
            throw runtime_error("mymatrix::*: other not rectangular");       
     }
     
