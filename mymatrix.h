@@ -135,26 +135,19 @@ public:
   //
   mymatrix(const mymatrix<T>& other)
   {
-  
-    int R = other.NumRows;
-    int C;
     
-    for (int c = 0; c < R; ++c){
-        C = other.Rows[c].NumCols;
-    }
+    Rows = new ROW[other.numrows()];  // an array with R ROW structs:
+    NumRows = other.numrows();
     
-    Rows = new ROW[R];  // an array with R ROW structs:
-    NumRows = R;
-    
-    for (int r = 0; r < C; ++r)
+    for (int r = 0; r < NumRows; ++r)
     {
-        Rows[r].Cols = new T[C];  // an array with R elements of type T:
-        Rows[r].NumCols = C;
+        Rows[r].Cols = new T[other.numcols(r)];  // an array with R elements of type T:
+        Rows[r].NumCols = other.numcols(r);
 
         // initialize the elements to their default value:
         for (int c = 0; c < Rows[r].NumCols; ++c)
         {
-            other.Rows[r].Cols[c] = T{};  // default value for type T:
+            Rows[r].Cols[c] = other.Rows[r].Cols[c];  // default value for type T:
         }
     }
     //
@@ -252,14 +245,17 @@ public:
       throw invalid_argument("mymatrix::grow: # of rows");
     if (C < 1)
       throw invalid_argument("mymatrix::grow: # of cols");
-
+    if(R < NumRows){
+        R = NumRows;
+    }
+    
     incRow = new ROW[R];
-    if(R >= NumRows){
+    if(NumRows >= R){
         for(int i=0; i<R; ++i){
             incRow[i].Cols = new int[C];
         }
 
-        for(int r = 0; r < NumRows; ++r)
+        for(int r = 0; r < this->NumRows; ++r)
         {
             for (int c = 0; c < Rows[r].NumCols; ++c)
             {
@@ -364,18 +360,7 @@ public:
   //
   mymatrix<T> operator*(T scalar)
   {
-   
-
-    //
-    // TODO
-    int uber;
-    for(int r = 0; r < this->NumRows; ++r)
-    {      for (int c = 0; c < Rows[r].NumCols; ++c)
-            {
-                uber = Rows[r].NumCols;
-            }
-        }
-    mymatrix<T> result(this->NumRows,uber);
+    mymatrix<T> result(*this);
 //     for(int r = 0; r < NumRows; ++r)
 //     {
 //         result.growcols(r, Rows[r].NumCols);
@@ -439,10 +424,10 @@ public:
     //
     for(int r = 0; r < this->NumRows; ++r)
     {
-        for (int c = 0; c < Rows[r].NumCols; ++c)
+        for (int c = 0; c < Rows[0].NumCols; ++c)
         {
             result.Rows[r].Cols[c] = 0;
-            for (int i=0; i<this->NumRows; ++i)
+            for (int i=0; i< other.NumRows; ++i)
             {
                 result.Rows[r].Cols[c] += other.Rows[i].Cols[c] * this->Rows[r].Cols[i];
             }
