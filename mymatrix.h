@@ -390,10 +390,10 @@ public:
     
     for(int r = 0; r < Rows[0].NumCols; ++r)
     {
-        if (Rows[0].NumCols > Rows[r].NumCols)
+        if (Rows[0].NumCols != Rows[r].NumCols)
            throw runtime_error("mymatrix::*: this not rectangular");
 
-        if (other.Rows[0].NumCols > other.Rows[r].NumCols)
+        if (other.Rows[0].NumCols != other.Rows[r].NumCols)
            throw runtime_error("mymatrix::*: other not rectangular");       
     }
     
