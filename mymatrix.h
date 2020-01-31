@@ -57,10 +57,8 @@ private:
     T*  Cols;     // dynamic array of column elements
     int NumCols;  // total # of columns (0..NumCols-1)
   };
-  ROW* incRow;
   ROW* Rows;     // dynamic array of ROWs
   int  NumRows;  // total # of rows (0..NumRows-1)
-  int incCol;
 
 public:
   //
@@ -248,36 +246,26 @@ public:
     if(R < NumRows){
         R = NumRows;
     }
-    
-    incRow = new ROW[R];
-    if(NumRows >= R){
-        for(int i=0; i<R; ++i){
-            incRow[i].Cols = new int[C];
-        }
 
-        for(int r = 0; r < this->NumRows; ++r)
-        {
-            for (int c = 0; c < Rows[r].NumCols; ++c)
-            {
-                incRow[r].Cols[c] = Rows[r].Cols[c];
-            }
-        }
+    mymatrix<T> incRow(R, C);
 
-        for(int i = 0; i < NumRows; ++i)
+    for(int r = 0; r < this->NumRows; ++r)
+    {
+        if(incRow.Rows[r].NumCols < Rows[r].NumCols)
         {
-           delete[] Rows[i].Cols;
+            incRow.Rows[r].Cols = new T[Rows[r].NumCols];
+            incRow.Rows[r].NumCols = Rows[r].NumCols;
         }
-        for(int j=0; j<R; ++j)
+        for (int c = 0; c < Rows[r].NumCols; ++c)
         {
-            Rows[j].Cols = incRow[j].Cols;
-            Rows[j].NumCols = C;
+            incRow.Rows[r].Cols[c] = Rows[r].Cols[c];
         }
-
-        this->NumRows = R;
+        for(int c = Rows[r].NumCols; c<C; c++)
+            incRow.Rows[r].Cols[c] = T{};
     }
-    //
-    // TODO:
-    //
+    
+    *this = incRow;
+    
   }
 
 
@@ -399,20 +387,25 @@ public:
     //
     // both matrices must be rectangular for this to work:
     //
-    if (Rows[0].NumCols != other.NumRows)
-       throw runtime_error("mymatrix::*: this not rectangular");
-   
-    if (other.Rows[0].NumCols != this->NumRows)
-       throw runtime_error("mymatrix::*: other not rectangular");
+    
+    for(int r = 0; r < Rows[0].NumCols; ++r)
+    {
+        if (Rows[0].NumCols > Rows[r].NumCols)
+           throw runtime_error("mymatrix::*: this not rectangular");
 
+        if (other.Rows[0].NumCols > other.Rows[r].NumCols)
+           throw runtime_error("mymatrix::*: other not rectangular");       
+    }
+    
+    if (this->Rows[0].NumCols != other.numrows())
+        throw runtime_error("mymatrix::*: size mismatch");
     //
     // Okay, both matrices are rectangular.  Can we multiply?  Only
     // if M1 is R1xN and M2 is NxC2.  This yields a result that is
     // R1xC2.
     // 
     // Example: 3x4 * 4x2 => 3x2
-    if (this->NumRows != other.NumRows)
-       throw runtime_error("mymatrix::*: size mismatch");
+    
 
     for (int c = 0; c < other.NumRows; ++c)
     {
