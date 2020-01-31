@@ -83,8 +83,8 @@ public:
         {
             Rows[r].Cols[c] = T{};  // default value for type T:
         }
-    }
-  }
+    }//for (int
+  }//mymatrix()
 
   //
   // parameterized constructor:
@@ -95,14 +95,14 @@ public:
   //
   mymatrix(int R, int C)
   {
+    Rows = new ROW[R];  // an array with R ROW structs:
+    NumRows = R;
+
     if (R < 1)
       throw invalid_argument("mymatrix::constructor: # of rows");
     if (C < 1)
       throw invalid_argument("mymatrix::constructor: # of cols");
-      
-    Rows = new ROW[R];  // an array with R ROW structs:
-    NumRows = R;
-
+  
     // initialize each row to have C columns:
     for (int r = 0; r < NumRows; ++r)
     {
@@ -114,11 +114,8 @@ public:
         {
             Rows[r].Cols[c] = T{};  // default value for type T:
         }
-     }
-    //
-    // TODO
-    //
-  }
+     }//for (int
+  }//mymatrix(int R
 
 
   //
@@ -147,11 +144,8 @@ public:
         {
             Rows[r].Cols[c] = other.Rows[r].Cols[c];  // default value for type T:
         }
-    }
-    //
-    // TODO
-    //
-  }
+    }//for (int
+  }//mymatrix(const
 
 
   //
@@ -163,7 +157,7 @@ public:
   int numrows() const
   {
     return NumRows;
-  }
+  }//int numrows
   
 
   //
@@ -179,8 +173,8 @@ public:
     if (r < 0 || r >= NumRows)
       throw invalid_argument("mymatrix::numcols: row");
 
-    return this->Rows[r].NumCols;
-  }
+    return this->Rows[r].NumCols;             //return num of cols in rows r
+  }//int numcols
 
 
   //
@@ -197,27 +191,28 @@ public:
   //
   void growcols(int r, int C)
   {
+    T* newA = new T[C];                          // Creating new array
+
     if (r < 0 || r >= NumRows)
       throw invalid_argument("mymatrix::growcols: row");
     if (C < 1)
       throw invalid_argument("mymatrix::growcols: columns");
-    if (C <= Rows[r].NumCols)
+    if (C <= Rows[r].NumCols)                    // testing if Num of cols is smaller than the value of C passed then return
         return;
-        
-    T* newA = new T[C];
-    for (int c = 0; c < Rows[r].NumCols; ++c){
+            
+    for (int c = 0; c < Rows[r].NumCols; ++c){   // storing the values of Cols in new array
         newA[c] = Rows[r].Cols[c];
     }
     
-    for (int c = Rows[r].NumCols; c < C; ++c)
+    for (int c = Rows[r].NumCols; c < C; ++c)    // setting newA to default value
     {
-        newA[c] = T{};  // default value for type T:
+        newA[c] = T{};                           // default value for type T:
     }
     
-    delete[] Rows[r].Cols;
-    Rows[r].Cols = newA;
-    Rows[r].NumCols = C;
-  }
+    delete[] Rows[r].Cols;                       // delete the old matrix
+    Rows[r].Cols = newA;                         // storing the value of newA in old matrix
+    Rows[r].NumCols = C;                         // setting the num of cols equal to C
+  }//void growcols(
 
 
   //
@@ -247,26 +242,26 @@ public:
         R = NumRows;
     }
 
-    mymatrix<T> incRow(R, C);
+    mymatrix<T> incRow(R, C);                               // creating new matrix incRow with dimensions R and C
 
     for(int r = 0; r < this->NumRows; ++r)
     {
-        if(incRow.Rows[r].NumCols < Rows[r].NumCols)
+        if(incRow.Rows[r].NumCols < Rows[r].NumCols)        // if new matrix Colums are smaller than original matrix
         {
-            incRow.Rows[r].Cols = new T[Rows[r].NumCols];
-            incRow.Rows[r].NumCols = Rows[r].NumCols;
+            incRow.Rows[r].Cols = new T[Rows[r].NumCols];   // create new Cols
+            incRow.Rows[r].NumCols = Rows[r].NumCols;       // and store the old to incRow
         }
-        for (int c = 0; c < Rows[r].NumCols; ++c)
+        for (int c = 0; c < Rows[r].NumCols; ++c)           
         {
-            incRow.Rows[r].Cols[c] = Rows[r].Cols[c];
+            incRow.Rows[r].Cols[c] = Rows[r].Cols[c];       // setting cols to new matrix
         }
         for(int c = Rows[r].NumCols; c<C; c++)
-            incRow.Rows[r].Cols[c] = T{};
+            incRow.Rows[r].Cols[c] = T{};                   // setting the rest of cols to default type T
     }
     
-    *this = incRow;
+    *this = incRow;                                         // setting the incRow to original matrix
     
-  }
+  }//void grow(
 
 
   //
@@ -283,12 +278,12 @@ public:
     {
         for (int c = 0; c < Rows[r].NumCols; ++c)
         {
-            numElements++;
+            numElements++;                           // incrementing numElements as it goes through the whole matrix
         }
     }
     
-    return numElements;
-  }
+    return numElements;                              // return numElements
+  }//int size
 
 
   //
@@ -307,11 +302,8 @@ public:
     if (c < 0 || c >= Rows[r].NumCols)
       throw invalid_argument("mymatrix::at: col");
 
-    //
-    // TODO
-    //
-    return this->Rows[r].Cols[c];
-  }
+    return this->Rows[r].Cols[c];                          // return reference to element at location r,c
+  }// T& at
 
 
   //
@@ -330,12 +322,8 @@ public:
     if (c < 0 || c >= Rows[r].NumCols)
       throw invalid_argument("mymatrix::(): col");
 
-    
-    //
-    // TODO
-    //
-    return Rows[r].Cols[c];
-  }
+    return Rows[r].Cols[c];                             // return element at r,c
+  }//T& operator
 
   //
   // scalar multiplication
@@ -348,22 +336,18 @@ public:
   //
   mymatrix<T> operator*(T scalar)
   {
-    mymatrix<T> result(*this);
-//     for(int r = 0; r < NumRows; ++r)
-//     {
-//         result.growcols(r, Rows[r].NumCols);
-//     }
-        
+    mymatrix<T> solution(*this);                                  // creating new matrix solution by passing original matrix
+    
     for(int r = 0; r < this->NumRows; ++r)
     {
         for (int c = 0; c < Rows[r].NumCols; ++c)
         {
-            result.Rows[r].Cols[c] = scalar*Rows[r].Cols[c];
+            solution.Rows[r].Cols[c] = scalar * Rows[r].Cols[c];    // setting solution matrix equal to scalar times element stored in r,c
         }
     }
 
-    return result;
-  }
+    return solution;                                              // return solution matrix
+  }//mymatrix<T> operator
 
 
   //
@@ -384,34 +368,29 @@ public:
   {
     //mymatrix<T> result;
     int removeZero;
-
+        
     for(int r = 0; r < NumRows; ++r)
     {
-        if (Rows[0].NumCols != Rows[r].NumCols)
-           throw runtime_error("mymatrix::*: this not rectangular");
+        if (Rows[0].NumCols != Rows[r].NumCols)                             // if # of cols at row 0 is not equal to cols at different rows
+           throw runtime_error("mymatrix::*: this not rectangular");        // return throw statement
+           
+        if (this->Rows[0].NumCols != other.numrows())                       // this cols at rows 0 is not equal to other num of rows
+           throw runtime_error("mymatrix::*: size mismatch");               // return throw statement
     }
     
     for (int c = 0; c < other.NumRows; ++c)
     {
-        if (other.Rows[0].NumCols != other.Rows[c].NumCols)
-           throw runtime_error("mymatrix::*: other not rectangular");       
+        if (other.Rows[0].NumCols != other.Rows[c].NumCols)                 // if # of other cols at row 0 is not equal to cols at diff row 
+           throw runtime_error("mymatrix::*: other not rectangular");       // return throw statement
     }
-    
-    if (this->Rows[0].NumCols != other.numrows())
-        throw runtime_error("mymatrix::*: size mismatch");
-    //
-    // Okay, both matrices are rectangular.  Can we multiply?  Only
-    // if M1 is R1xN and M2 is NxC2.  This yields a result that is
-    // R1xC2.
-    // 
-    // Example: 3x4 * 4x2 => 3x2
     
 
     for (int c = 0; c < other.NumRows; ++c)
     {
-        removeZero = other.numcols(c);
+        removeZero = other.numcols(c);                                       // set the reference to values of other array to removeZero
     }
-    mymatrix<T> result(NumRows, removeZero);
+    
+    mymatrix<T> solution(NumRows, removeZero);                               // setting new matrix with dimensions NumRowsm removeZero 
     //
     // Okay, we can multiply:
     //
@@ -419,19 +398,16 @@ public:
     {
         for (int c = 0; c < Rows[0].NumCols; ++c)
         {
-            result.Rows[r].Cols[c] = 0;
+            solution.Rows[r].Cols[c] = 0;                                     // initializing the value of solution matrix to 0
             for (int i=0; i< other.NumRows; ++i)
             {
-                result.Rows[r].Cols[c] += other.Rows[i].Cols[c] * this->Rows[r].Cols[i];
+                // multiply other matrix cols with the rows of this matrix and adding it to solution matrix
+                solution.Rows[r].Cols[c] += other.Rows[i].Cols[c] * this->Rows[r].Cols[i]; 
             }
         }
-    } 
-    //
-    // TODO
-    //
-
-    return result;
-  }
+    }
+    return solution;                                                             // return solution
+  }//mymatrix<T> operator*
 
 
   //
@@ -449,6 +425,6 @@ public:
         }
         cout << endl;
     }
-  }
+  }//void _output
 
-};
+};//class mymatrix
