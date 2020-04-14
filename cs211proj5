@@ -1,0 +1,142 @@
+//
+// Project 5 - Infix Expression Evaluator
+// U. of Illinois, Chicago
+// CS 211: Spring 2020
+// author: Gurleen Kaur
+// This is the source code file for MyStack
+//
+
+#include "MyStack.h"
+
+// This is the class Stack for Values
+//_________________________________________________________________________________________________
+
+// Constructor
+ValueStack::ValueStack()
+{
+    // allocating memory
+    allocated = 2;
+    valueArr = new int[allocated];
+    currentUse = 0;
+}//ValueStack::ValueStack()
+
+// destructor
+ValueStack::~ValueStack()
+{
+    delete this->valueArr;
+}//ValueStack::~ValueStack()
+
+// clear the array
+void ValueStack::Reset()
+{
+    currentUse = 0;
+}//void ValueStack::Reset()
+
+// Checking if the stack is empty
+bool ValueStack::isEmpty()
+{
+    // return true if it is empty
+    if(currentUse == 0)
+        return TRUE;
+    else
+        return FALSE;
+}//bool ValueStack::isEmpty()
+
+// pushing the value to the stack
+void ValueStack::push(int value)
+{
+    int *cur;
+    // allocatting memory if we reached the size of the array
+    if (currentUse == allocated) 
+    {
+        cur = valueArr;
+        valueArr = new int[allocated+2];
+        for (int i = 0; i < allocated; i++)
+            valueArr[i] = cur[i];
+        
+        delete cur;
+    }
+    // pushing the value
+    valueArr[currentUse] = value;
+    currentUse++;
+}//void ValueStack::push
+
+// popping from the stack
+void ValueStack::pop()
+{
+    currentUse--;
+}//void ValueStack::pop
+
+// getting the top value of the stack
+int ValueStack::top()
+{
+    return valueArr[--currentUse];
+}//int ValueStack::top
+
+
+// This is the class Stack for Operators
+//_________________________________________________________________________________________________
+
+// Default Constructor
+OperatorStack::OperatorStack()
+{
+    // allocating memory
+    allocated = 2;
+    operandArr = new char[allocated];
+    currentUse = 0;
+}//OperatorStack::OperatorStack()
+
+// destructor
+OperatorStack::~OperatorStack()
+{
+    delete this->operandArr;
+}//OperatorStack::~OperatorStack()
+
+// clear the array
+void OperatorStack::Reset()
+{
+    currentUse = 0;
+}//void OperatorStack::Reset
+
+// Checking if the stack is empty
+bool OperatorStack::isEmpty()
+{
+    // return true if it is empty
+    if(currentUse == 0)
+        return TRUE;
+    else
+        return FALSE;
+}//bool OperatorStack::isEmpty
+
+// pushing the value to the stack
+void OperatorStack::push(char operand)
+{
+    char *cur;
+    // allocatting memory if we reached the size of the array
+    if (currentUse == allocated) 
+    {
+        cur = operandArr;
+        operandArr = new char[allocated+2];
+        
+        // moving back to operandArr
+        for (int i = 0; i < allocated; i++)
+            operandArr[i] = cur[i];
+        
+        delete cur;
+    }
+    // pushing the value
+    operandArr[currentUse] = operand;
+    currentUse++;
+}//void OperatorStack::push
+
+// popping from the stack
+void OperatorStack::pop()
+{
+    currentUse--;
+}//void OperatorStack::pop
+
+// getting the top value of the stack
+char OperatorStack::top()
+{	
+    return operandArr[--currentUse];
+}//int OperatorStack::top
